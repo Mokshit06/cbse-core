@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { nanoid } from 'nanoid';
 import prisma from '../lib/prisma';
 
 const router = Router();
@@ -31,12 +32,13 @@ router.post('/', async (req, res) => {
     });
   }
 
-  await prisma.class.create({
+  const userClass = await prisma.class.create({
     data: {
       schoolId: user.school.id,
       participants: {
         connect: { id: user.id },
       },
+      code: nanoid(),
       grade: req.body.grade,
       section: req.body.section,
     },
@@ -44,6 +46,36 @@ router.post('/', async (req, res) => {
 
   res.status(201).json({
     message: 'Class created',
+    data: { code: userClass.code },
+  });
+});
+
+router.post('/join', async (req, res) => {
+  if (!req.user) return;
+
+  if (req.user.classId) {
+    return res.status(400).json({
+      message: 'You are already part of a class',
+    });
+  }
+
+  const userClass = await prisma.class.findUnique({
+    where: { code: req.body.code as string },
+  });
+
+  if (!userClass) {
+    return res.status(404).json({
+      message: "Class doesn't exist",
+    });
+  }
+
+  await prisma.user.update({
+    where: { id: req.user.id },
+    data: { classId: userClass.id },
+  });
+
+  res.json({
+    message: `Joining ${userClass.grade}${userClass.section}`,
   });
 });
 

@@ -32,3 +32,27 @@ export function useCreateClass() {
     }
   );
 }
+
+export function useJoinClass() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const toast = useToast();
+
+  return useMutation(
+    async (data: { code: string }) => api.post('/class/join', data),
+    {
+      onSuccess(result) {
+        queryClient.invalidateQueries('/class');
+
+        toast({
+          title: 'Class joined!',
+          description: result.data.message,
+          status: 'success',
+          isClosable: true,
+        });
+
+        router.push('/class');
+      },
+    }
+  );
+}

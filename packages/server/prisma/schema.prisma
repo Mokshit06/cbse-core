@@ -43,6 +43,7 @@ model Class {
   school       School    @relation(fields: [schoolId], references: [id])
   schoolId     String
   grade        Int
+  code         String    @unique
   section      String
   tests        Test[]
   meetings     Meeting[]

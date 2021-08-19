@@ -71,6 +71,8 @@ io.on('connection', socket => {
     socket.on('disconnect-video', removeParticipant);
     socket.on('disconnect', removeParticipant);
   });
+
+  socket.on('notes-edit', () => {});
 });
 
 const port = process.env.PORT ?? 5000;
