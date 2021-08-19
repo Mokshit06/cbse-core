@@ -13,6 +13,7 @@ generator client {
 enum UserRole {
   TEACHER
   STUDENT
+  SCHOOL_INCHARGE
 }
 
 enum QuestionType {
@@ -27,6 +28,7 @@ model User {
   password            String
   image               String?
   role                UserRole?
+  school              School?
   class               Class?               @relation(fields: [classId], references: [id])
   classId             String?
   meetingParticipants MeetingParticipant[]
@@ -70,10 +72,14 @@ model MeetingEntry {
 }
 
 model School {
-  id        String   @id @default(uuid())
-  classes   Class[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(uuid())
+  incharge   User     @relation(fields: [inchargeId], references: [id])
+  inchargeId String
+  verified   Boolean  @default(false)
+  code       String
+  classes    Class[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Book {

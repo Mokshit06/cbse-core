@@ -1,4 +1,5 @@
 import { User } from '@prisma/client';
+import 'dotenv-flow/config';
 import http from 'http';
 import { ExpressPeerServer } from 'peer';
 import { Server } from 'socket.io';
@@ -26,7 +27,7 @@ app.use('/peer', peerServer);
 
 io.on('connection', socket => {});
 
-const port = process.env.PORT ?? 3000;
+const port = process.env.PORT ?? 5000;
 
 server.listen(port, () => {
   console.log(`Server started on http://localhost:${port}`);
