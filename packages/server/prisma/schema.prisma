@@ -29,6 +29,7 @@ model User {
   image               String?
   role                UserRole?
   school              School?
+  verified            Boolean              @default(false)
   class               Class?               @relation(fields: [classId], references: [id])
   classId             String?
   meetingParticipants MeetingParticipant[]
@@ -48,17 +49,21 @@ model Class {
 }
 
 model Meeting {
-  id        String   @id @default(uuid())
-  class     Class    @relation(fields: [classId], references: [id])
-  classId   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String               @id @default(uuid())
+  code        String               @unique
+  class       Class                @relation(fields: [classId], references: [id])
+  classId     String
+  particpants MeetingParticipant[]
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
 }
 
 model MeetingParticipant {
   id        String         @id @default(uuid())
   user      User           @relation(fields: [userId], references: [id])
   userId    String
+  meeting   Meeting        @relation(fields: [meetingId], references: [id])
+  meetingId String
   entries   MeetingEntry[]
   updatedAt DateTime       @updatedAt
 }
@@ -76,7 +81,7 @@ model School {
   incharge   User     @relation(fields: [inchargeId], references: [id])
   inchargeId String
   verified   Boolean  @default(false)
-  code       String
+  code       String   @unique
   classes    Class[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
