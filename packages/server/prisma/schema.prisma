@@ -9,3 +9,123 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
+enum SocialProvider {
+  GOOGLE
+}
+
+enum UserRole {
+  TEACHER
+  STUDENT
+}
+
+enum QuestionType {
+  TEXT
+  MCQ
+}
+
+model User {
+  id                  String               @id @default(uuid())
+  name                String
+  email               String?              @unique
+  image               String?
+  socialId            String               @unique
+  role                UserRole?
+  provider            SocialProvider
+  class               Class?               @relation(fields: [classId], references: [id])
+  classId             String?
+  meetingParticipants MeetingParticipant[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+}
+
+model Class {
+  id           String    @id @default(uuid())
+  participants User[]
+  school       School    @relation(fields: [schoolId], references: [id])
+  schoolId     String
+  tests        Test[]
+  meetings     Meeting[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Meeting {
+  id        String   @id @default(uuid())
+  class     Class    @relation(fields: [classId], references: [id])
+  classId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MeetingParticipant {
+  id        String         @id @default(uuid())
+  user      User           @relation(fields: [userId], references: [id])
+  userId    String
+  entries   MeetingEntry[]
+  updatedAt DateTime       @updatedAt
+}
+
+model MeetingEntry {
+  id                   String             @id @default(uuid())
+  particpant           MeetingParticipant @relation(fields: [meetingParticipantId], references: [id])
+  meetingParticipantId String
+  joinedAt             DateTime           @default(now())
+  leftAt               DateTime?
+}
+
+model School {
+  id        String   @id @default(uuid())
+  classes   Class[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Book {
+  id        String    @id @default(uuid())
+  grade     Int
+  name      String
+  chapters  Chapter[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Chapter {
+  id        String   @id @default(uuid())
+  number    Int
+  name      String
+  book      Book     @relation(fields: [bookId], references: [id])
+  bookId    String
+  pdfUrl    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notice {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Test {
+  id        String     @id @default(uuid())
+  subject   String
+  class     Class      @relation(fields: [classId], references: [id])
+  classId   String
+  questions Question[]
+  startedAt DateTime
+  endedAt   DateTime
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Question {
+  id         String       @id @default(uuid())
+  type       QuestionType
+  question   String
+  answer     String
+  mcqOptions String[]
+  test       Test         @relation(references: [id], fields: [testId])
+  testId     String
+}
