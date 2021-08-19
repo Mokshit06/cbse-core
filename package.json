@@ -1,0 +1,8 @@
+{
+  "name": "cbse-core",
+  "private": true,
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ]
+}
