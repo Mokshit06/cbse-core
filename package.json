@@ -4,5 +4,9 @@
   "license": "MIT",
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "scripts": {
+    "server": "yarn workspace server dev",
+    "web": "yarn workspace web dev"
+  }
 }

@@ -10,10 +10,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum SocialProvider {
-  GOOGLE
-}
-
 enum UserRole {
   TEACHER
   STUDENT
@@ -27,11 +23,10 @@ enum QuestionType {
 model User {
   id                  String               @id @default(uuid())
   name                String
-  email               String?              @unique
+  email               String               @unique
+  password            String
   image               String?
-  socialId            String               @unique
   role                UserRole?
-  provider            SocialProvider
   class               Class?               @relation(fields: [classId], references: [id])
   classId             String?
   meetingParticipants MeetingParticipant[]
@@ -128,4 +123,13 @@ model Question {
   mcqOptions String[]
   test       Test         @relation(references: [id], fields: [testId])
   testId     String
+}
+
+model Session {
+  sid    String   @id
+  sess   Json
+  expire DateTime
+
+  @@index([expire], name: "IDX_session_expire")
+  @@map("session")
 }
