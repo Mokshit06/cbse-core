@@ -42,6 +42,8 @@ model Class {
   participants User[]
   school       School    @relation(fields: [schoolId], references: [id])
   schoolId     String
+  grade        Int
+  section      String
   tests        Test[]
   meetings     Meeting[]
   createdAt    DateTime  @default(now())
