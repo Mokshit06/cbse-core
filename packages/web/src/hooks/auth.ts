@@ -1,6 +1,7 @@
 import { useToast } from '@chakra-ui/react';
 import { User, UserRole } from '@prisma/client';
 import { useRouter } from 'next/router';
+import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import api from '../lib/api';
 
@@ -75,17 +76,14 @@ export function useRegister() {
 }
 
 export function useUser() {
-  const user = useQuery<User>('/auth/me', {
+  return useQuery<User>('/auth/me', {
     retry: false,
     refetchOnWindowFocus: false,
     // 10 mins
-    staleTime: 1000 * 60 * 10,
+    staleTime: 1000 * 60 * 100,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
-
-  return {
-    ...user,
-    isAuthenticated: user.status === 'success' && !!user.data,
-  };
 }
 
 export function useLogout() {

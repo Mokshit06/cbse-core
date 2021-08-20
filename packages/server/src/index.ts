@@ -27,52 +27,65 @@ const peerServer = ExpressPeerServer(server, {
 app.use('/peer', peerServer);
 
 io.on('connection', socket => {
-  const userId = socket.handshake.query.id as string;
+  socket.on(
+    'meeting-join',
+    async ({ code, userId }: { code: string; userId: string }) => {
+      console.log('JOIN');
+      const meeting = await prisma.meeting.findUnique({
+        where: { code },
+      });
+      if (!meeting) return;
 
-  socket.on('meeting-join', async ({ code }: { code: string }) => {
-    const meeting = await prisma.meeting.findUnique({
-      where: { code },
-    });
-    if (!meeting) return;
-
-    let participant = await prisma.meetingParticipant.findFirst({
-      where: {
-        meetingId: meeting.id,
-        userId,
-      },
-      include: { entries: true },
-    });
-
-    if (!participant) {
-      participant = await prisma.meetingParticipant.create({
-        data: {
+      let participant = await prisma.meetingParticipant.findFirst({
+        where: {
           meetingId: meeting.id,
           userId,
         },
-        include: { entries: true },
+        include: { entries: true, user: true },
       });
-    }
 
-    const entry = await prisma.meetingEntry.create({
-      data: { meetingParticipantId: participant.id },
+      if (!participant) {
+        participant = await prisma.meetingParticipant.create({
+          data: {
+            meetingId: meeting.id,
+            userId,
+          },
+          include: { entries: true, user: true },
+        });
+      }
+
+      const entry = await prisma.meetingEntry.create({
+        data: { meetingParticipantId: participant.id },
+      });
+
+      socket.join(meeting.id);
+      socket.to(meeting.id).emit('meeting-connected', {
+        participant: { ...participant, entries: undefined },
+      });
+
+      const removeParticipant = async () => {
+        socket.to(meeting.id).emit('meeting-disconnected', {
+          participant: { ...participant, entries: undefined },
+        });
+        await prisma.meetingEntry.update({
+          where: { id: entry.id },
+          data: { leftAt: new Date() },
+        });
+      };
+
+      socket.on('disconnect-video', removeParticipant);
+      socket.on('disconnect', removeParticipant);
+    }
+  );
+
+  socket.on('notes-edit', async ({ noteId, text, ops }) => {
+    await prisma.note.update({
+      where: { id: noteId },
+      data: { text },
     });
 
-    socket.join(meeting.id);
-    socket.to(meeting.id).emit('meeting-connected', { participant });
-
-    const removeParticipant = async () => {
-      socket.to(meeting.id).emit('meeting-disconnected', { participant });
-      await prisma.meetingEntry.update({
-        where: { id: entry.id },
-        data: { leftAt: new Date() },
-      });
-    };
-
-    socket.on('disconnect-video', removeParticipant);
-    socket.on('disconnect', removeParticipant);
+    io.emit('remote-notes-edit', { noteId, text, ops });
   });
-
-  socket.on('notes-edit', () => {});
 });
 
 const port = process.env.PORT ?? 5000;

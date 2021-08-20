@@ -67,6 +67,7 @@ model MeetingParticipant {
   userId    String
   meeting   Meeting        @relation(fields: [meetingId], references: [id])
   meetingId String
+  note      Note?
   entries   MeetingEntry[]
   updatedAt DateTime       @updatedAt
 }
@@ -81,6 +82,8 @@ model MeetingEntry {
 
 model School {
   id         String   @id @default(uuid())
+  name       String
+  address    String
   incharge   User     @relation(fields: [inchargeId], references: [id])
   inchargeId String
   verified   Boolean  @default(false)
@@ -137,6 +140,15 @@ model Question {
   mcqOptions String[]
   test       Test         @relation(references: [id], fields: [testId])
   testId     String
+}
+
+model Note {
+  id            String              @id @default(uuid())
+  text          String
+  participant   MeetingParticipant? @relation(references: [id], fields: [participantId])
+  participantId String?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
 }
 
 model Session {

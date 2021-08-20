@@ -46,7 +46,7 @@ function RegisterForm() {
   const [nameInput, nameMeta] = useField('name');
   const [emailInput, emailMeta] = useField('email');
   const [passwordInput, passwordMeta] = useField('password');
-  const [roleInput, roleMeta] = useField('role');
+  const [roleInput, roleMeta, roleHelpers] = useField('role');
   const [confirmPasswordInput, confirmPasswordMeta] =
     useField('confirmPassword');
 
@@ -65,7 +65,10 @@ function RegisterForm() {
         <Input {...confirmPasswordInput} type="password" />
       </Field>
       <Field meta={roleMeta} label="Role">
-        <RadioGroup {...roleInput}>
+        <RadioGroup
+          value={roleInput.value}
+          onChange={r => roleHelpers.setValue(r)}
+        >
           <Stack direction="column">
             <Radio value={UserRole.STUDENT}>Student</Radio>
             <Radio value={UserRole.TEACHER}>Teacher</Radio>

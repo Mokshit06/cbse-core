@@ -5,6 +5,10 @@ import prisma from '../lib/prisma';
 
 const router = Router();
 
+router.get('/me', async (req, res) => {
+  res.json(req.user);
+});
+
 router.post('/register', async (req, res) => {
   const data = req.body as User;
   const existingUser = await prisma.user.findUnique({
@@ -25,6 +29,10 @@ router.post('/register', async (req, res) => {
       role: data.role,
     },
   });
+
+  (req.session as any).auth ||= {};
+  (req.session as any).auth.user = user.id;
+  req.user = user;
 
   res.status(201).json({
     message: 'Registration successful',
@@ -48,6 +56,10 @@ router.post('/login', async (req, res) => {
       message: 'Username or password is incorrect',
     });
   }
+
+  (req.session as any).auth ||= {};
+  (req.session as any).auth.user = user.id;
+  req.user = user;
 
   res.json({
     message: 'Login successful',
