@@ -4,6 +4,7 @@ import meetingRouter from './meeting';
 import classRouter from './class';
 import notesRouter from './notes';
 import schoolRouter from './school';
+import notificationsRouter from './notifications';
 
 const router = Router();
 
@@ -15,5 +16,6 @@ router.use('/class', classRouter);
 router.use('/meeting', meetingRouter);
 router.use('/notes', notesRouter);
 router.use('/school', schoolRouter);
+router.use('/notifications', notificationsRouter);
 
 export default router;

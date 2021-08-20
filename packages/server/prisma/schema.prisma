@@ -84,16 +84,17 @@ model MeetingEntry {
 }
 
 model School {
-  id         String   @id @default(uuid())
-  name       String
-  address    String
-  incharge   User     @relation(fields: [inchargeId], references: [id])
-  inchargeId String
-  verified   Boolean  @default(false)
-  code       String   @unique
-  classes    Class[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id            String         @id @default(uuid())
+  name          String
+  address       String
+  incharge      User           @relation(fields: [inchargeId], references: [id])
+  inchargeId    String
+  verified      Boolean        @default(false)
+  code          String         @unique
+  classes       Class[]
+  notifications Notification[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model Book {
@@ -118,7 +119,18 @@ model Chapter {
 
 model Notice {
   id        String   @id @default(uuid())
+  title     String
   content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  content   String
+  title     String
+  school    School   @relation(fields: [schoolId], references: [id])
+  schoolId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -1,7 +1,3 @@
-// declare module 'webgazer' {
-//   const mod: any;
-//   export default mod;
-// }
 import { useQuery } from 'react-query';
 import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
@@ -15,9 +11,9 @@ export default function Test() {
   const hasError = useRef(false);
   const didBlur = useRef(false);
   const testId = router.query.id as string;
-  // const { data: test, status } = useQuery(['/tests', testId], {
-  //   enabled: !!testId,
-  // });
+  const { data: test, status } = useQuery(['/tests', testId], {
+    enabled: !!testId,
+  });
 
   useEffect(() => {
     const focusHandler = () => {
@@ -95,14 +91,12 @@ export default function Test() {
     webgazer.showPredictionPoints(true).showVideoPreview(true);
   }, [toast]);
 
-  // if (status !== 'success' || !test) {
-  //   return null;
-  // }
-
   return (
     <>
       <Script src="/w.js" type="text/javascript" strategy="beforeInteractive" />
-      <pre>{JSON.stringify({}, null, 2)}</pre>
+      {status !== 'success' || !test ? null : (
+        <pre>{JSON.stringify({}, null, 2)}</pre>
+      )}
     </>
   );
 }

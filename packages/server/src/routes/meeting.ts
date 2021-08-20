@@ -7,11 +7,11 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   if (!req.user || !req.user.classId) return;
-
   const meetings = await prisma.meeting.findMany({
     where: {
       classId: req.user.classId,
     },
+    include: { class: { include: { participants: true } } },
   });
 
   res.json({
