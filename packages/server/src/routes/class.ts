@@ -38,7 +38,7 @@ router.post('/', async (req, res) => {
       participants: {
         connect: { id: user.id },
       },
-      code: nanoid(),
+      code: nanoid(10),
       grade: req.body.grade,
       section: req.body.section,
     },

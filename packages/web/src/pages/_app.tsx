@@ -5,6 +5,7 @@ import type { QueryFunction, QueryKey } from 'react-query';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { useState } from 'react';
 import api from '../lib/api';
+import '../styles/global.css';
 
 const defaultQueryFn: QueryFunction<unknown, QueryKey> = async ({
   queryKey,

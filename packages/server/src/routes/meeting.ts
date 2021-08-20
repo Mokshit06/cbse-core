@@ -5,7 +5,21 @@ import prisma from '../lib/prisma';
 
 const router = Router();
 
-router.post('/create', async (req, res) => {
+router.get('/', async (req, res) => {
+  if (!req.user || !req.user.classId) return;
+
+  const meetings = await prisma.meeting.findMany({
+    where: {
+      classId: req.user.classId,
+    },
+  });
+
+  res.json({
+    data: meetings,
+  });
+});
+
+router.post('/', async (req, res) => {
   if (!req.user) return;
   if (!req.user.classId || req.user.role !== UserRole.TEACHER) {
     return res.status(400).json({
@@ -17,6 +31,9 @@ router.post('/create', async (req, res) => {
     data: {
       code: nanoid(10),
       classId: req.user.classId,
+      name: req.body.name,
+      startedAt: req.body.startedAt,
+      ended: req.body.endedAt,
     },
   });
 
@@ -33,6 +50,16 @@ router.get('/:code', async (req, res) => {
 
   const meeting = await prisma.meeting.findUnique({
     where: { code: req.params.code },
+    include: {
+      class: true,
+      particpants: {
+        include: {
+          entries: true,
+          note: true,
+          user: true,
+        },
+      },
+    },
   });
 
   if (!meeting) {

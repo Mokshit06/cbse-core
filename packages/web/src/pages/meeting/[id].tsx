@@ -7,6 +7,7 @@ import { UserRole } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useEffect, useRef } from 'react';
+import { useQuery } from 'react-query';
 
 function Video({ stream }: { stream?: MediaStream }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -32,7 +33,19 @@ function Video({ stream }: { stream?: MediaStream }) {
 export default function Meeting() {
   const router = useRouter();
   const meetingId = router.query.id as string;
-  const { participants, videoRef } = useConnectMeeting();
+  const { data: meeting, status } = useQuery(['/meeting', meetingId], {
+    enabled: !!meetingId,
+  });
+
+  if (status !== 'success' || !meeting) {
+    return null;
+  }
+
+  return <MeetingView meetingId={meetingId} />;
+}
+
+function MeetingView({ meetingId }: { meetingId: string }) {
+  const { participants, videoRef, stopRef } = useConnectMeeting(meetingId);
   const user = useUser();
   const [currentNote, setCurrentNote] = useState<{
     userId: string;
@@ -48,6 +61,8 @@ export default function Meeting() {
         ref={videoRef}
         onLoadedMetadata={() => videoRef.current?.play()}
       />
+      {/* <button onClick={() => stopRef.current?.('audio')}>Mute</button>
+      <button onClick={() => stopRef.current?.('video')}>Turn off video</button> */}
       {participants.map((stream, index) => (
         <Video stream={stream.stream} key={index} />
       ))}
@@ -56,7 +71,6 @@ export default function Meeting() {
         {participants.map(participant => (
           <Box
             onClick={() => {
-              console.log('SETTING NOTE');
               setCurrentNote({ userId: participant.userId!, meetingId });
             }}
             key={participant.userId}

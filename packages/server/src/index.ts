@@ -83,9 +83,8 @@ io.on('connection', socket => {
   );
 
   socket.on(
-    'notes-load',
+    'get-document',
     async ({ userId, meetingId }: { userId: string; meetingId: string }) => {
-      console.log({ userId, meetingId });
       const note = (await prisma.note.findFirst({
         where: {
           participant: { userId, meeting: { code: meetingId } },
@@ -93,13 +92,13 @@ io.on('connection', socket => {
       }))!;
 
       socket.join(note.id);
-      socket.emit('notes-load', JSON.parse(note.text));
+      socket.emit('load-document', JSON.parse(note.text));
+
       socket.on('send-changes', delta => {
-        console.log(delta);
-        socket.to(note.id).emit('receive-changes', delta);
+        socket.broadcast.to(note.id).emit('receive-changes', delta);
       });
 
-      socket.on('notes-save', async delta => {
+      socket.on('save-document', async delta => {
         await prisma.note.update({
           where: { id: note.id },
           data: { text: JSON.stringify(delta) },

@@ -53,10 +53,13 @@ model Class {
 
 model Meeting {
   id          String               @id @default(uuid())
+  name        String
   code        String               @unique
   class       Class                @relation(fields: [classId], references: [id])
   classId     String
   particpants MeetingParticipant[]
+  startedAt   DateTime
+  ended       DateTime
   createdAt   DateTime             @default(now())
   updatedAt   DateTime             @updatedAt
 }

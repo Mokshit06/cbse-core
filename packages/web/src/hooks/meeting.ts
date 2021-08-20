@@ -16,7 +16,7 @@ type Participant = {
   userId?: string;
 };
 
-export function useConnectMeeting() {
+export function useConnectMeeting(meetingId: string) {
   const user = useUser();
   const peerRef = useRef<Peer>();
   const lastAddedRef = useRef(0);
@@ -24,6 +24,7 @@ export function useConnectMeeting() {
   const clientConnectedRef = useRef(false);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const stopRef = useRef<any>(() => {});
 
   useEffect(() => {
     if (!user.data || clientConnectedRef.current) return;
@@ -42,7 +43,7 @@ export function useConnectMeeting() {
       client.on('open', id => {
         console.log('peer:open');
         socket.emit('meeting-join', {
-          code: 'meeting-code',
+          code: meetingId,
           userId: id,
         });
       });
@@ -51,6 +52,9 @@ export function useConnectMeeting() {
         audio: true,
         video: true,
       });
+
+      stopRef.current = (k: string) =>
+        stream.getTracks().map(t => t.kind == k && t.stop());
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -117,12 +121,13 @@ export function useConnectMeeting() {
     return () => {
       socket.off('meeting-connected').off('meeting-disconnected');
     };
-  }, [user]);
+  }, [meetingId, user]);
 
   return useMemo(
     () => ({
       participants,
       videoRef,
+      stopRef,
     }),
     [participants]
   );

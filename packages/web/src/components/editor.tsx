@@ -13,7 +13,6 @@ const TOOLBAR_OPTIONS = [
   [{ script: 'sub' }, { script: 'super' }],
   [{ align: [] }],
   ['image', 'blockquote', 'code-block'],
-  ['clean'],
 ];
 
 export default function Editor({
@@ -22,52 +21,35 @@ export default function Editor({
   note: { userId: string; meetingId: string };
 }) {
   const [quill, setQuill] = useState<Quill>();
-  const effectRan = useRef(false);
-  const wrapperRef = useCallback(wrapper => {
-    if (wrapper == null) return;
-
-    wrapper.innerHTML = '';
-    const editor = document.createElement('div');
-    wrapper.append(editor);
-    import('quill').then(mod => {
-      const q = new mod.default(editor, {
-        theme: 'snow',
-        modules: { toolbar: TOOLBAR_OPTIONS },
-      });
-      setQuill(q);
-    });
-  }, []);
 
   useEffect(() => {
-    if (quill == null) return;
+    if (socket == null || quill == null) return;
 
-    socket.on('notes-loaded', (delta: any) => {
-      quill.setContents(delta);
+    socket.once('load-document', document => {
+      quill.setContents(document);
       quill.enable();
     });
 
-    socket.emit('notes-load', note);
-
-    return () => {
-      socket.off('notes-loaded');
-    };
-  }, [note, quill]);
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     socket.emit('notes-save', quill?.getContents());
-  //   }, 2000);
-
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, [quill]);
+    socket.emit('get-document', note);
+  }, [quill, note]);
 
   useEffect(() => {
-    if (quill == null) return;
+    if (socket == null || quill == null) return;
+
+    const interval = setInterval(() => {
+      socket.emit('save-document', quill.getContents());
+    }, 2000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [quill]);
+
+  useEffect(() => {
+    if (socket == null || quill == null) return;
 
     const handler = (delta: any) => {
-      quill?.updateContents(delta);
+      quill.updateContents(delta);
     };
     socket.on('receive-changes', handler);
 
@@ -77,8 +59,7 @@ export default function Editor({
   }, [quill]);
 
   useEffect(() => {
-    if (quill == null || effectRan.current) return;
-    effectRan.current = true;
+    if (socket == null || quill == null) return;
 
     const handler = (delta: any, oldDelta: any, source: any) => {
       if (source !== 'user') return;
@@ -91,5 +72,22 @@ export default function Editor({
     };
   }, [quill]);
 
-  return <div ref={wrapperRef} />;
+  const wrapperRef = useCallback(wrapper => {
+    if (wrapper == null) return;
+
+    wrapper.innerHTML = '';
+    const editor = document.createElement('div');
+    wrapper.append(editor);
+    import('quill').then(mod => {
+      const q = new mod.default(editor, {
+        theme: 'snow',
+        modules: { toolbar: TOOLBAR_OPTIONS },
+      });
+      q.disable();
+      q.setText('Loading...');
+      setQuill(q);
+    });
+  }, []);
+
+  return <div ref={wrapperRef}></div>;
 }
