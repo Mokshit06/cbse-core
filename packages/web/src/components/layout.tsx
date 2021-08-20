@@ -32,7 +32,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           alignItems="center"
         >
           <Link href="/">Home</Link>
-          {user.isAuthenticated ? (
+          {user.data && user.status === 'success' ? (
             <>
               <Link href="/dashboard">Dashboard</Link>
               <Button onClick={() => logout.mutate()}>Logout</Button>

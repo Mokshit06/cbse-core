@@ -49,8 +49,12 @@ io.on('connection', socket => {
           data: {
             meetingId: meeting.id,
             userId,
+            note: { create: { text: JSON.stringify({}) } },
           },
-          include: { entries: true, user: true },
+          include: {
+            entries: true,
+            user: true,
+          },
         });
       }
 
@@ -78,14 +82,31 @@ io.on('connection', socket => {
     }
   );
 
-  socket.on('notes-edit', async ({ noteId, text, ops }) => {
-    await prisma.note.update({
-      where: { id: noteId },
-      data: { text },
-    });
+  socket.on(
+    'notes-load',
+    async ({ userId, meetingId }: { userId: string; meetingId: string }) => {
+      console.log({ userId, meetingId });
+      const note = (await prisma.note.findFirst({
+        where: {
+          participant: { userId, meeting: { code: meetingId } },
+        },
+      }))!;
 
-    io.emit('remote-notes-edit', { noteId, text, ops });
-  });
+      socket.join(note.id);
+      socket.emit('notes-load', JSON.parse(note.text));
+      socket.on('send-changes', delta => {
+        console.log(delta);
+        socket.to(note.id).emit('receive-changes', delta);
+      });
+
+      socket.on('notes-save', async delta => {
+        await prisma.note.update({
+          where: { id: note.id },
+          data: { text: JSON.stringify(delta) },
+        });
+      });
+    }
+  );
 });
 
 const port = process.env.PORT ?? 5000;
