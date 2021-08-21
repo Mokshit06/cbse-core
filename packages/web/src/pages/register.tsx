@@ -1,6 +1,15 @@
 import Field from '@/components/field';
 import { useRegister } from '@/hooks/auth';
-import { Button, Input, Radio, RadioGroup, Stack } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Input,
+  Radio,
+  RadioGroup,
+  Stack,
+} from '@chakra-ui/react';
 import { UserRole } from '@prisma/client';
 import {
   Form,
@@ -9,6 +18,7 @@ import {
   useField,
   useFormikContext,
 } from 'formik';
+import Head from 'next/head';
 import React from 'react';
 
 const initialValues = {
@@ -33,11 +43,37 @@ export default function Register() {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      component={RegisterForm}
-    />
+    <Flex
+      width="full"
+      bg="gray.50"
+      flex={1}
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Head>
+        <title>Sign up</title>
+      </Head>
+      <Box
+        p={8}
+        width="full"
+        maxWidth={{ base: '380px', sm: '400px', md: '450px' }}
+        rounded="lg"
+        bg="white"
+        textAlign="center"
+        boxShadow="sm"
+      >
+        <Box my={2} mb={6} textAlign="center">
+          <Heading fontWeight="500">Sign up</Heading>
+        </Box>
+        <Box mt={4}>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            component={RegisterForm}
+          />
+        </Box>
+      </Box>
+    </Flex>
   );
 }
 
@@ -76,13 +112,17 @@ function RegisterForm() {
           </Stack>
         </RadioGroup>
       </Field>
-      <Button
-        type="submit"
-        isLoading={isSubmitting}
-        disabled={isSubmitting || !isValid}
-      >
-        Register
-      </Button>
+      <Box mt={6} mb={4} textAlign="left">
+        <Button
+          isLoading={isSubmitting}
+          disabled={isSubmitting || !isValid}
+          type="submit"
+          width="full"
+          py={6}
+        >
+          Register
+        </Button>
+      </Box>
     </Form>
   );
 }

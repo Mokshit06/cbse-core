@@ -1,6 +1,6 @@
 import Field from '@/components/field';
 import { useLogin } from '@/hooks/auth';
-import { Button, Input } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Input } from '@chakra-ui/react';
 import {
   Form,
   FormikHelpers,
@@ -8,6 +8,8 @@ import {
   useField,
   useFormikContext,
 } from 'formik';
+import Head from 'next/head';
+import React from 'react';
 
 const initialValues = {
   email: '',
@@ -27,11 +29,37 @@ export default function Login() {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      component={LoginForm}
-    />
+    <Flex
+      width="full"
+      bg="gray.50"
+      flex={1}
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Head>
+        <title>Login</title>
+      </Head>
+      <Box
+        p={8}
+        width="full"
+        maxWidth={{ base: '380px', sm: '400px', md: '450px' }}
+        rounded="lg"
+        bg="white"
+        textAlign="center"
+        boxShadow="sm"
+      >
+        <Box my={2} mb={6} textAlign="center">
+          <Heading fontWeight="500">Login</Heading>
+        </Box>
+        <Box mt={4}>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            component={LoginForm}
+          />
+        </Box>
+      </Box>
+    </Flex>
   );
 }
 
@@ -48,13 +76,17 @@ function LoginForm() {
       <Field meta={passwordMeta} label="Password">
         <Input {...passwordInput} type="password" />
       </Field>
-      <Button
-        type="submit"
-        isLoading={isSubmitting}
-        disabled={isSubmitting || !isValid}
-      >
-        Login
-      </Button>
+      <Box mt={6} mb={4} textAlign="left">
+        <Button
+          isLoading={isSubmitting}
+          disabled={isSubmitting || !isValid}
+          type="submit"
+          width="full"
+          py={6}
+        >
+          Login
+        </Button>
+      </Box>
     </Form>
   );
 }
