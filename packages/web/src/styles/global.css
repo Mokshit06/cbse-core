@@ -15,7 +15,7 @@
   height: 2.5rem;
   border-radius: 0.25rem;
   border: 1px solid;
-  border-color: hsl(0, 0%, 80%);
+  border-color: rgb(226, 232, 240);
 }
 
 .react-datepicker__input-container:hover {

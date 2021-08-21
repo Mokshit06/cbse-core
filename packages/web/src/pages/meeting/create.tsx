@@ -1,7 +1,7 @@
 import DatePicker from '@/components/date-picker';
 import Field from '@/components/field';
 import api from '@/lib/api';
-import { Button, Input } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Input, useToast } from '@chakra-ui/react';
 import {
   Form,
   Formik,
@@ -9,6 +9,8 @@ import {
   useField,
   useFormikContext,
 } from 'formik';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
@@ -23,11 +25,22 @@ type Values = typeof initialValues;
 
 export default function CreateMeeting() {
   const queryClient = useQueryClient();
+  const toast = useToast();
+  const router = useRouter();
   const createMeeting = useMutation(
     async (values: Values) => api.post('/meeting', values),
     {
       onSuccess() {
-        // show toast and redirect
+        queryClient.invalidateQueries('/meeting');
+
+        toast({
+          title: 'Meeting scheduled',
+          description: `The meeting you created has been scheduled!`,
+          status: 'success',
+          isClosable: true,
+        });
+
+        router.push('/');
       },
     }
   );
@@ -40,11 +53,31 @@ export default function CreateMeeting() {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      component={CreateMeetingForm}
-    />
+    <Flex flex={1} width="full" alignItems="center" justifyContent="center">
+      <Head>
+        <title>Join you class | Zola</title>
+      </Head>
+      <Box
+        borderWidth={1}
+        p={8}
+        width="full"
+        maxWidth={{ base: '380px', sm: '500px', md: '600px' }}
+        borderRadius={4}
+        textAlign="center"
+        boxShadow="lg"
+      >
+        <Box mt={2} mb={6} textAlign="center">
+          <Heading fontWeight="500">Schedule Meeting</Heading>
+        </Box>
+        <Box mt={4}>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            component={CreateMeetingForm}
+          />
+        </Box>
+      </Box>
+    </Flex>
   );
 }
 
@@ -77,13 +110,16 @@ function CreateMeetingForm() {
           dateFormat="Pp"
         />
       </Field>
-      <Button
-        type="submit"
-        isLoading={isSubmitting}
-        disabled={isSubmitting || !isValid}
-      >
-        Schedule
-      </Button>
+      <Box my={6} mb={0} textAlign="right">
+        <Button
+          isLoading={isSubmitting}
+          disabled={isSubmitting || !isValid}
+          type="submit"
+          py={6}
+        >
+          Schedule
+        </Button>
+      </Box>
     </Form>
   );
 }

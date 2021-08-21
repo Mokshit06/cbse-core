@@ -10,6 +10,7 @@ export const authMiddleware: RequestHandler = async (req, res, next) => {
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
+    include: { school: true },
   });
   if (!user) return next();
 

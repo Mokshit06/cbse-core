@@ -127,6 +127,24 @@ function Info() {
     );
   }
 
+  if (user.data.role === UserRole.SCHOOL_INCHARGE && !user.data.school) {
+    return (
+      <Link href="/school/register" passHref>
+        <Button
+          as="a"
+          bg="purple.300"
+          fontSize="2xl"
+          p={6}
+          _hover={{ bg: 'purple.300', boxShadow: 'md' }}
+          _focus={{ bg: 'purple.300', boxShadow: 'md' }}
+          _active={{ bg: 'purple.300', boxShadow: 'md' }}
+        >
+          Register School
+        </Button>
+      </Link>
+    );
+  }
+
   return (
     <Button
       as="div"
@@ -144,6 +162,7 @@ function Info() {
 
 function Meetings() {
   const { status, data: meetings } = useQuery<{ data: any[] }>('/meeting');
+  const { data: user } = useUser();
 
   // if (status !== 'success' || !meetings) {
   //   return null;
@@ -159,43 +178,64 @@ function Meetings() {
       boxShadow="sm"
       bg="white"
     >
-      <Box bg="gray.50" p={4} rounded="lg">
-        <Heading as="h2" fontWeight="400" fontSize="xl">
+      <Flex
+        justifyContent="space-between"
+        bg="gray.50"
+        alignItems="center"
+        rounded="lg"
+        px={3}
+      >
+        <Heading py={4} as="h2" fontWeight="400" fontSize="xl">
           Meetings
         </Heading>
-      </Box>
+        {user?.role === UserRole.TEACHER && (
+          <Link href="/meeting/create" passHref>
+            <Button as="a">Create</Button>
+          </Link>
+        )}
+      </Flex>
       {meetings?.data
         ?.filter(
           meeting => new Date(meeting.ended).getTime() >= new Date().getTime()
         )
         .map(meeting => (
-          <Box key={meeting.id} bg="gray.50" rounded="lg" p={4}>
-            <Text fontWeight="500" color="gray.600" fontSize="lg">
-              {meeting.name}
-            </Text>
-            <Box mt={2}>
-              {/* TODO use luxon to format */}
-              <Text>Starts at: {meeting.startedAt}</Text>
-              <Text>Ends at: {meeting.ended}</Text>
-            </Box>
-            <Flex mt={3} alignItems="center" gridGap={3}>
-              {(() => {
-                const name = meeting.class.participants.find(
-                  (p: any) => p.role === UserRole.TEACHER
-                ).name;
+          <Link
+            href={
+              new Date(meeting.startedAt).getTime() <= new Date().getTime()
+                ? `/meeting/${meeting.code}`
+                : '#'
+            }
+            passHref
+            key={meeting.id}
+          >
+            <Box as="a" bg="gray.50" rounded="lg" p={4}>
+              <Text fontWeight="500" color="gray.600" fontSize="lg">
+                {meeting.name}
+              </Text>
+              <Box mt={2}>
+                {/* TODO use luxon to format */}
+                <Text>Starts at: {meeting.startedAt}</Text>
+                <Text>Ends at: {meeting.ended}</Text>
+              </Box>
+              <Flex mt={3} alignItems="center" gridGap={3}>
+                {(() => {
+                  const name = meeting.class.participants.find(
+                    (p: any) => p.role === UserRole.TEACHER
+                  ).name;
 
-                return (
-                  <>
-                    <Avatar size="sm" name={name} />
-                    <Text color="gray.700" fontWeight="400">
-                      {name}
-                    </Text>
-                  </>
-                );
-              })()}
-            </Flex>
-            {/* {JSON.stringify(meetings.data)} */}
-          </Box>
+                  return (
+                    <>
+                      <Avatar size="sm" name={name} />
+                      <Text color="gray.700" fontWeight="400">
+                        {name}
+                      </Text>
+                    </>
+                  );
+                })()}
+              </Flex>
+              {/* {JSON.stringify(meetings.data)} */}
+            </Box>
+          </Link>
         ))}
     </Stack>
   );

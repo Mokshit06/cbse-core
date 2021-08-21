@@ -1,7 +1,6 @@
 import { useToast } from '@chakra-ui/react';
-import { User, UserRole } from '@prisma/client';
+import { School, User, UserRole } from '@prisma/client';
 import { useRouter } from 'next/router';
-import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import api from '../lib/api';
 
@@ -76,7 +75,11 @@ export function useRegister() {
 }
 
 export function useUser() {
-  return useQuery<User>('/auth/me', {
+  return useQuery<
+    User & {
+      school: School | null;
+    }
+  >('/auth/me', {
     retry: false,
     refetchOnWindowFocus: false,
     // 10 mins

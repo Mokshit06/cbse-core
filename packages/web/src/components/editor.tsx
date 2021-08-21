@@ -3,6 +3,8 @@ import type Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import socket from '@/lib/socket';
 import { useRef } from 'react';
+import { Box } from '@chakra-ui/react';
+import { css } from '@emotion/react';
 
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -89,5 +91,5 @@ export default function Editor({
     });
   }, []);
 
-  return <div ref={wrapperRef}></div>;
+  return <Box h="full" overflow="hidden" ref={wrapperRef}></Box>;
 }

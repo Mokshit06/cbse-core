@@ -6,6 +6,7 @@ import {
   MeetingParticipant as PrismaMeetingParticipant,
   User,
 } from '@prisma/client';
+import api from '@/lib/api';
 
 type MeetingParticipant = PrismaMeetingParticipant & {
   user: User;
@@ -66,7 +67,12 @@ export function useConnectMeeting(meetingId: string) {
         call.on('stream', stream => {
           if (Date.now() - lastConnectedRef.current > 1000) {
             lastConnectedRef.current = Date.now();
-            setParticipants(s => [...s, { stream, userId: call.peer }]);
+            api.get(`/users/${call.peer}`).then(({ data }) => {
+              setParticipants(s => [
+                ...s,
+                { stream, userId: call.peer, user: data.name },
+              ]);
+            });
           }
         });
         call.on('close', () => {
