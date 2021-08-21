@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { Class } from '@prisma/client';
+import { Class, User } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useToast } from '@chakra-ui/react';
 import api from '@/lib/api';
 
 export function useClass() {
-  return useQuery<Class>('/class');
+  return useQuery<{ data: Class & { participants: User[] } }>('/class');
 }
 
 export function useCreateClass() {

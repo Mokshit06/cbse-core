@@ -9,6 +9,7 @@ router.get('/', async (req, res) => {
 
   const userClass = await prisma.class.findUnique({
     where: { id: req.user.classId! },
+    include: { participants: true },
   });
 
   res.json({ data: userClass });

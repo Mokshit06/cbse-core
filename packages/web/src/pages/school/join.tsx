@@ -58,21 +58,27 @@ export default function JoinSchool() {
   };
 
   return (
-    <Flex flex={1} width="full" alignItems="center" justifyContent="center">
+    <Flex
+      width="full"
+      bg="gray.50"
+      flex={1}
+      alignItems="center"
+      justifyContent="center"
+    >
       <Head>
         <title>Join your school</title>
       </Head>
       <Box
-        borderWidth={1}
         p={8}
         width="full"
-        maxWidth={['360px', null, null, '430px', null]}
-        borderRadius={4}
+        maxWidth={{ base: '380px', sm: '400px', md: '450px' }}
+        rounded="lg"
+        bg="white"
         textAlign="center"
-        boxShadow="lg"
+        boxShadow="sm"
       >
-        <Box my={2} textAlign="center">
-          <Heading>Join your school</Heading>
+        <Box my={2} mb={6} textAlign="center">
+          <Heading fontWeight="500">Join your school</Heading>
         </Box>
 
         <Box mt={4}>

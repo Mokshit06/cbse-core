@@ -31,7 +31,9 @@ export default function SingleNotes() {
       alignItems="center"
       justifyContent="center"
     >
-      <Head>Notes</Head>
+      <Head>
+        <title>Notes</title>
+      </Head>
       <Box
         p={8}
         width="full"

@@ -1,6 +1,6 @@
 import Field from '@/components/field';
 import { useCreateClass } from '@/hooks/class';
-import { Button, Select } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Select } from '@chakra-ui/react';
 import {
   Form,
   Formik,
@@ -8,6 +8,8 @@ import {
   useField,
   useFormikContext,
 } from 'formik';
+import Head from 'next/head';
+import React from 'react';
 
 const initialValues = {
   grade: 10,
@@ -27,11 +29,37 @@ export default function CreateClass() {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      component={CreateClassForm}
-    />
+    <Flex
+      width="full"
+      bg="gray.50"
+      flex={1}
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Head>
+        <title>Join your class</title>
+      </Head>
+      <Box
+        p={8}
+        width="full"
+        maxWidth={{ base: '380px', sm: '500px', md: '500px' }}
+        rounded="lg"
+        bg="white"
+        textAlign="center"
+        boxShadow="sm"
+      >
+        <Box mt={2} mb={6} textAlign="center">
+          <Heading fontWeight="500">Join Class</Heading>
+        </Box>
+        <Box mt={4}>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            component={CreateClassForm}
+          />
+        </Box>
+      </Box>
+    </Flex>
   );
 }
 
@@ -60,13 +88,16 @@ function CreateClassForm() {
           ))}
         </Select>
       </Field>
-      <Button
-        type="submit"
-        isLoading={isSubmitting}
-        disabled={isSubmitting || !isValid}
-      >
-        Create
-      </Button>
+      <Box my={6} mb={0} textAlign="right">
+        <Button
+          isLoading={isSubmitting}
+          disabled={isSubmitting || !isValid}
+          type="submit"
+          py={6}
+        >
+          Create
+        </Button>
+      </Box>
     </Form>
   );
 }

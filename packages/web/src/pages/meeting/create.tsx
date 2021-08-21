@@ -53,18 +53,24 @@ export default function CreateMeeting() {
   };
 
   return (
-    <Flex flex={1} width="full" alignItems="center" justifyContent="center">
+    <Flex
+      width="full"
+      bg="gray.50"
+      flex={1}
+      alignItems="center"
+      justifyContent="center"
+    >
       <Head>
-        <title>Join you class | Zola</title>
+        <title>Schedule Meeting</title>
       </Head>
       <Box
-        borderWidth={1}
         p={8}
         width="full"
         maxWidth={{ base: '380px', sm: '500px', md: '600px' }}
-        borderRadius={4}
+        rounded="lg"
+        bg="white"
         textAlign="center"
-        boxShadow="lg"
+        boxShadow="sm"
       >
         <Box mt={2} mb={6} textAlign="center">
           <Heading fontWeight="500">Schedule Meeting</Heading>

@@ -1,6 +1,6 @@
 import Field from '@/components/field';
 import api from '@/lib/api';
-import { Button, Input, useToast } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Input, useToast } from '@chakra-ui/react';
 import {
   Form,
   Formik,
@@ -8,6 +8,7 @@ import {
   useField,
   useFormikContext,
 } from 'formik';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -45,11 +46,37 @@ export default function RegisterSchool() {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      component={RegisterSchoolForm}
-    />
+    <Flex
+      width="full"
+      bg="gray.50"
+      flex={1}
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Head>
+        <title>Join your school</title>
+      </Head>
+      <Box
+        p={8}
+        width="full"
+        maxWidth={{ base: '380px', sm: '500px', md: '600px' }}
+        rounded="lg"
+        bg="white"
+        textAlign="center"
+        boxShadow="sm"
+      >
+        <Box my={2} mb={6} textAlign="center">
+          <Heading fontWeight="500">Join your school</Heading>
+        </Box>
+        <Box mt={4}>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            component={RegisterSchoolForm}
+          />
+        </Box>
+      </Box>
+    </Flex>
   );
 }
 
@@ -78,13 +105,16 @@ function RegisterSchoolForm() {
       <Field meta={websiteMeta} label="Website">
         <Input {...websiteInput} />
       </Field>
-      <Button
-        type="submit"
-        isLoading={isSubmitting}
-        disabled={isSubmitting || !isValid}
-      >
-        Register
-      </Button>
+      <Box my={6} mb={0} textAlign="right">
+        <Button
+          isLoading={isSubmitting}
+          disabled={isSubmitting || !isValid}
+          type="submit"
+          py={6}
+        >
+          Register
+        </Button>
+      </Box>
     </Form>
   );
 }

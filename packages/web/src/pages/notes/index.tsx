@@ -28,7 +28,9 @@ export default function Notes() {
       alignItems="center"
       justifyContent="center"
     >
-      <Head>Notes</Head>
+      <Head>
+        <title>Notes</title>
+      </Head>
       <Box
         // borderWidth={1}
         p={8}
