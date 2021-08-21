@@ -38,7 +38,7 @@ export default function CreateClass() {
       justifyContent="center"
     >
       <Head>
-        <title>Join your class</title>
+        <title>Create your class</title>
       </Head>
       <Box
         p={8}
@@ -50,7 +50,7 @@ export default function CreateClass() {
         boxShadow="sm"
       >
         <Box mt={2} mb={6} textAlign="center">
-          <Heading fontWeight="500">Join Class</Heading>
+          <Heading fontWeight="500">Create your class</Heading>
         </Box>
         <Box mt={4}>
           <Formik

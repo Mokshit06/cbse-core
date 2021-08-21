@@ -19,6 +19,7 @@ import { UserRole, Notification } from '@prisma/client';
 import Link from 'next/link';
 import React from 'react';
 import { DateTime } from 'luxon';
+import Head from 'next/head';
 
 export default function Dashboard() {
   const user = useUser();
@@ -29,6 +30,9 @@ export default function Dashboard() {
 
   return (
     <Box flex={1} bg="gray.50" h="100%">
+      <Head>
+        <title>Dashboard</title>
+      </Head>
       <Box py="2.3rem" px="3rem">
         <Heading fontSize="5xl">Hello,</Heading>
         <Flex gridGap={3} alignItems="center">

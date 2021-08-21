@@ -1,4 +1,4 @@
-import { Flex, Heading, HStack, Spacer, Button } from '@chakra-ui/react';
+import { Flex, Heading, HStack, Spacer, Button, Image } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 import { useUser, useLogout } from '../hooks/auth';
 import Link from './link';
@@ -14,14 +14,15 @@ export default function Layout({ children }: { children: ReactNode }) {
         as="nav"
         align="center"
         wrap="wrap"
-        padding="1.3rem"
+        padding="0.8rem 1.3rem"
         zIndex={1000}
         boxShadow="md"
       >
         <Flex align="center" mr={5}>
-          <Heading mb={{ base: 3, sm: 0 }} as="h1" size="lg">
+          {/* <Heading mb={{ base: 3, sm: 0 }} as="h1" size="lg">
             CBSE
-          </Heading>
+          </Heading> */}
+          <Image src="/logo.png" alt="" height={20} />
         </Flex>
 
         <Spacer />
@@ -40,7 +41,10 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <Link href="/notes">Notes</Link>
               )}
               {user.data.role === UserRole.TEACHER && (
-                <Link href="/attendance">Attendance</Link>
+                <>
+                  <Link href="/attendance">Attendance</Link>
+                  <Link href="/class">Class</Link>
+                </>
               )}
               {user.data.role === UserRole.SCHOOL_INCHARGE &&
                 user.data.school && <Link href="/school">School</Link>}
