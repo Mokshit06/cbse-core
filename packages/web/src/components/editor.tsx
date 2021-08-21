@@ -3,7 +3,7 @@ import type Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import socket from '@/lib/socket';
 import { useRef } from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, BoxProps } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 
 const TOOLBAR_OPTIONS = [
@@ -19,7 +19,8 @@ const TOOLBAR_OPTIONS = [
 
 export default function Editor({
   note,
-}: {
+  ...props
+}: BoxProps & {
   note: { userId: string; meetingId: string };
 }) {
   const [quill, setQuill] = useState<Quill>();
@@ -91,5 +92,5 @@ export default function Editor({
     });
   }, []);
 
-  return <Box h="full" overflow="hidden" ref={wrapperRef}></Box>;
+  return <Box h="full" overflow="hidden" ref={wrapperRef} {...props} />;
 }

@@ -2,6 +2,7 @@ import { Flex, Heading, HStack, Spacer, Button } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 import { useUser, useLogout } from '../hooks/auth';
 import Link from './link';
+import { UserRole } from '@prisma/client';
 
 export default function Layout({ children }: { children: ReactNode }) {
   const user = useUser();
@@ -35,6 +36,14 @@ export default function Layout({ children }: { children: ReactNode }) {
           {user.data && user.status === 'success' ? (
             <>
               <Link href="/dashboard">Dashboard</Link>
+              {user.data.role === UserRole.STUDENT && (
+                <Link href="/notes">Notes</Link>
+              )}
+              {user.data.role === UserRole.TEACHER && (
+                <Link href="/attendance">Attendance</Link>
+              )}
+              {user.data.role === UserRole.SCHOOL_INCHARGE &&
+                user.data.school && <Link href="/school">School</Link>}
               <Button onClick={() => logout.mutate()}>Logout</Button>
             </>
           ) : (

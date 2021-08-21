@@ -8,6 +8,7 @@ router.get('/', async (req, res) => {
 
   const notes = await prisma.note.findMany({
     where: { participant: { userId: req.user.id } },
+    include: { participant: { include: { meeting: true } } },
   });
 
   res.json({
