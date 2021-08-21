@@ -82,6 +82,8 @@ io.on('connection', socket => {
     }
   );
 
+  socket.setMaxListeners(Infinity);
+
   socket.on(
     'get-document',
     async ({ userId, meetingId }: { userId: string; meetingId: string }) => {

@@ -32,7 +32,8 @@ export default function JoinSchool() {
         code: values.code,
       });
 
-      await queryClient.invalidateQueries('/school');
+      queryClient.invalidateQueries('/school');
+      queryClient.invalidateQueries('/auth/me');
 
       toast({
         title: school.message,

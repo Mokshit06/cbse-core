@@ -1,7 +1,15 @@
 import DatePicker from '@/components/date-picker';
 import Field from '@/components/field';
 import api from '@/lib/api';
-import { Box, Button, Flex, Heading, Input, useToast } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Input,
+  Select,
+  useToast,
+} from '@chakra-ui/react';
 import {
   Form,
   Formik,
@@ -12,11 +20,13 @@ import {
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { Chapter } from '@prisma/client';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 const initialValues = {
   name: '',
   alertTime: '',
+  chapter: '',
   startedAt: new Date(),
   endedAt: new Date(),
 };
@@ -88,17 +98,27 @@ export default function CreateMeeting() {
 }
 
 function CreateMeetingForm() {
+  const { data: chapters } = useQuery<{ data: Chapter[] }>('/chapters');
   const { isSubmitting, isValid } = useFormikContext<Values>();
   const [nameInput, nameMeta] = useField('name');
-  const [alertTimeInput, alertTimeMeta] = useField('alertTime');
   const [startedAtInput, startedAtMeta, startedAtHelpers] =
     useField('startedAt');
   const [endedAtInput, endedAtMeta, endedAtHelpers] = useField('endedAt');
+  const [chapterInput, chapterMeta] = useField('chapter');
 
   return (
     <Form>
       <Field meta={nameMeta} label="Name of meeting">
         <Input {...nameInput} />
+      </Field>
+      <Field meta={chapterMeta} label="Chapter">
+        <Select placeholder="Select the chapter" {...chapterInput}>
+          {chapters?.data.map(chapter => (
+            <option key={chapter.id} value={chapter.id}>
+              {chapter.name}
+            </option>
+          ))}
+        </Select>
       </Field>
       <Field meta={startedAtMeta} label="Start time of meeting">
         <DatePicker

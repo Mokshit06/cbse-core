@@ -15,10 +15,12 @@ import {
   DrawerOverlay,
   Flex,
   Grid,
+  Heading,
   Stack,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useQuery } from 'react-query';
 import { UserRole } from '@prisma/client';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
@@ -48,30 +50,30 @@ export default function Meeting() {
   const router = useRouter();
   const meetingId = router.query.id as string;
 
-  if (!meetingId) return null;
-  // const {
-  //   data: meeting,
-  //   status,
-  //   error,
-  // } = useQuery(['/meeting', meetingId], {
-  //   enabled: !!meetingId,
-  //   retry: false,
-  // });
+  const {
+    data: meeting,
+    status,
+    error,
+  } = useQuery(['/meeting', meetingId], {
+    enabled: !!meetingId,
+    retry: false,
+  });
 
-  // if (status === 'loading') return null;
+  if (status === 'loading' || !meetingId) return null;
+  if (status !== 'success' && !meeting) {
+    return <Heading>Something went wrong! {JSON.stringify(error)}</Heading>;
+  }
 
-  // if (status !== 'success' || !meeting) {
-  //   return (
-  //     <Heading>
-  //       Something went wrong! {(JSON.stringify(error))}
-  //     </Heading>
-  //   );
-  // }
-
-  return <MeetingView meetingId={meetingId} />;
+  return <MeetingView meetingId={meetingId} meeting={meeting} />;
 }
 
-function MeetingView({ meetingId }: { meetingId: string }) {
+function MeetingView({
+  meetingId,
+  meeting,
+}: {
+  meetingId: string;
+  meeting: any;
+}) {
   const { participants, videoRef, stopRef } = useConnectMeeting(meetingId);
   const user = useUser();
   const [currentNote, setCurrentNote] = useState<{
@@ -88,6 +90,12 @@ function MeetingView({ meetingId }: { meetingId: string }) {
       <Flex flex={1}>
         <Grid
           flex={2}
+          // display={
+          //   user.data?.role === UserRole.STUDENT &&
+          //   meeting?.data?.chapter?.pdfUrl
+          //     ? 'none'
+          //     : null
+          // }
           width="full"
           templateColumns="repeat(auto-fit, minmax(400px, 1fr))"
           alignContent="center"
@@ -110,10 +118,30 @@ function MeetingView({ meetingId }: { meetingId: string }) {
             </AspectRatio>
           ))}
         </Grid>
-        {user.data?.role === UserRole.STUDENT && (
+        {/* {user.data?.role === UserRole.STUDENT &&
+          meeting?.data?.chapter?.pdfUrl && (
+            <Box flex={2}>
+              <iframe
+                src={meeting?.data?.chapter?.pdfUrl}
+                height="100%"
+                width="100%"
+              />
+            </Box>
+          )} */}
+        {user.data?.role === UserRole.STUDENT ? (
           <Box flex={1}>
             <Editor note={{ userId: user.data.id, meetingId }} />
           </Box>
+        ) : (
+          meeting?.data?.chapter?.pdfUrl && (
+            <Box flex={1}>
+              <iframe
+                src={meeting?.data?.chapter?.pdfUrl}
+                height="100%"
+                width="100%"
+              />
+            </Box>
+          )
         )}
 
         <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="sm">

@@ -34,6 +34,7 @@ router.post('/', async (req, res) => {
       name: req.body.name,
       startedAt: req.body.startedAt,
       ended: req.body.endedAt,
+      chapterId: req.body.chapter,
     },
   });
 
@@ -59,6 +60,7 @@ router.get('/:code', async (req, res) => {
           user: true,
         },
       },
+      chapter: true,
     },
   });
 

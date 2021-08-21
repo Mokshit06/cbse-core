@@ -32,8 +32,9 @@ export default function RegisterSchool() {
     {
       onSuccess() {
         queryClient.invalidateQueries('/school');
+        queryClient.invalidateQueries('/auth/me');
         // TODO show toast
-        router.push('/school');
+        router.push('/dashboard');
       },
     }
   );

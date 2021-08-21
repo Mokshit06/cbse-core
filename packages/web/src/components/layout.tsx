@@ -42,8 +42,8 @@ export default function Layout({ children }: { children: ReactNode }) {
               {user.data.role === UserRole.TEACHER && (
                 <Link href="/attendance">Attendance</Link>
               )}
-              {/* {user.data.role === UserRole.SCHOOL_INCHARGE &&
-                user.data.school && <Link href="/school">School</Link>} */}
+              {user.data.role === UserRole.SCHOOL_INCHARGE &&
+                user.data.school && <Link href="/school">School</Link>}
               <Button onClick={() => logout.mutate()}>Logout</Button>
             </>
           ) : (

@@ -1,6 +1,6 @@
 import Field from '@/components/field';
 import { useCreateClass } from '@/hooks/class';
-import { Box, Button, Flex, Heading, Select } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Input, Select } from '@chakra-ui/react';
 import {
   Form,
   Formik,
@@ -14,6 +14,7 @@ import React from 'react';
 const initialValues = {
   grade: 10,
   section: 'A',
+  code: '',
 };
 
 type Values = typeof initialValues;
@@ -67,6 +68,7 @@ function CreateClassForm() {
   const { isSubmitting, isValid } = useFormikContext<Values>();
   const [gradeInput, gradeMeta] = useField('grade');
   const [sectionInput, sectionMeta] = useField('section');
+  const [codeInput, codeMeta] = useField('code');
 
   return (
     <Form>
@@ -87,6 +89,9 @@ function CreateClassForm() {
             </option>
           ))}
         </Select>
+      </Field>
+      <Field meta={codeMeta} label="School Code">
+        <Input {...codeInput} />
       </Field>
       <Box my={6} mb={0} textAlign="right">
         <Button

@@ -22,20 +22,26 @@ router.post('/', async (req, res) => {
     where: { id: req.user.id },
     include: { school: true },
   }))!;
-  if (!user.school) {
-    return res.status(400).json({
-      message: "You haven't joined a school yet",
-    });
-  }
+  // if (!user.school) {
+  //   return res.status(400).json({
+  //     message: "You haven't joined a school yet",
+  //   });
+  // }
   if (user.classId) {
     return res.status(400).json({
       message: "You've already joined a class",
     });
   }
 
+  console.log(req.body);
+
   const userClass = await prisma.class.create({
     data: {
-      schoolId: user.school.id,
+      school: {
+        connect: {
+          code: req.body.code,
+        },
+      },
       participants: {
         connect: { id: user.id },
       },

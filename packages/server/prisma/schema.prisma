@@ -58,6 +58,8 @@ model Meeting {
   class       Class                @relation(fields: [classId], references: [id])
   classId     String
   particpants MeetingParticipant[]
+  chapter     Chapter?             @relation(fields: [chapterId], references: [id])
+  chapterId   String?
   startedAt   DateTime
   ended       DateTime
   createdAt   DateTime             @default(now())
@@ -107,14 +109,15 @@ model Book {
 }
 
 model Chapter {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   number    Int
   name      String
-  book      Book     @relation(fields: [bookId], references: [id])
+  book      Book      @relation(fields: [bookId], references: [id])
   bookId    String
   pdfUrl    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  meetings  Meeting[]
 }
 
 model Notice {
