@@ -22,7 +22,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           {/* <Heading mb={{ base: 3, sm: 0 }} as="h1" size="lg">
             CBSE
           </Heading> */}
-          <Image src="/logo.png" alt="" height={20} />
+          <Image src="/assets/icon.png" alt="" height="4rem" opacity={0.9} />
         </Flex>
 
         <Spacer />

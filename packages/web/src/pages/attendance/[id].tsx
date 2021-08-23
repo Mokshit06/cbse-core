@@ -100,10 +100,8 @@ export default function Test() {
                     <Td>
                       {' '}
                       {!!meetingParticipant
-                        ? DateTime.fromMillis(
-                            parseInt(
-                              meetingParticipant?.entries[0].joinedAt as any
-                            )
+                        ? DateTime.fromISO(
+                            meetingParticipant?.entries[0].joinedAt as any
                           ).toFormat('t')
                         : 'NA'}
                     </Td>
@@ -123,16 +121,16 @@ export default function Test() {
                                 if (!entry.leftAt) return totalTime;
 
                                 const timeInEntry =
-                                  (new Date(entry.leftAt!).getTime() -
-                                    new Date(entry.joinedAt!).getTime()) /
-                                  1000;
-                                console.log({ timeInEntry });
+                                  new Date(entry.leftAt!).getTime() -
+                                  new Date(entry.joinedAt!).getTime();
 
                                 return totalTime + timeInEntry;
                               },
                               0
-                            )! / 60
-                          ).toFixed(1)} minutes`}
+                            ) /
+                            1000 /
+                            60
+                          ).toFixed(2)} minutes`}
                     </Td>
                   </Tr>
                 );

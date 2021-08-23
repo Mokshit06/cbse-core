@@ -42,7 +42,7 @@ export default function Login() {
       <Box
         p={8}
         width="full"
-        maxWidth={{ base: '380px', sm: '400px', md: '450px' }}
+        maxWidth={{ base: '380px', sm: '400px', md: '420px' }}
         rounded="lg"
         bg="white"
         textAlign="center"

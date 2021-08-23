@@ -65,7 +65,7 @@ export default function Home() {
           justifyContent="center"
         >
           <Heading fontSize="3rem">
-            central board of secondary education
+            Central Board of Secondary Education 2.0
           </Heading>
           <Text fontWeight="200" fontSize="1.6rem" mt={6}>
             The Central Board of Secondary Education (CBSE) is a national level

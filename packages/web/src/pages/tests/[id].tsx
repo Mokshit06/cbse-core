@@ -65,7 +65,7 @@ export default function Test() {
                   isClosable: true,
                 });
 
-                webgazer.pause();
+                totalWarnings.current = 0;
                 return;
               }
               toast({
