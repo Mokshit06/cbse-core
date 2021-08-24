@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
         connect: { id: user.id },
       },
       code: nanoid(10),
-      grade: req.body.grade,
+      grade: parseInt(req.body.grade),
       section: req.body.section,
     },
   });
