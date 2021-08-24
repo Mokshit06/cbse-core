@@ -23,7 +23,7 @@ cp packages/web/.env.example packages/web/.env
 cp packages/server/.env.example packages/server/.env
 ```
 
-3. Add the postgres connection url and cookie secret (random string) in `packages/server.env`.
+3. Add the postgres connection url and cookie secret (random string) in `packages/server/.env`.
 
 ```bash
 COOKIE_SECRET="..."
